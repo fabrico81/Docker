@@ -1,0 +1,405 @@
+Section 2 
+ Now we're essentially  going to be typing in commands and looking at the output that comes.
+ It is the command that we're going to use to run me to create and run a container using an image.
+(image1)
+So at the command line, we're going to execute 
+	Docker Run 
+and then the name of the image that we want to use as the basis for this container.
+
+(image2)
+I want you to think about what probably just occurred when we ran that command.
+Chances are that somewhere on our hard disk is an image that has that filesystem snapshot with one single
+program inside of it.
+
+So when we executed Docker Run Hello World, we took that little snapshot of the hard drive.
+We stuck it into this little container thing or this kind of grouping of resources and then we executed the command run Hello World.
+(image1)
+Remember, any time that we execute Docker run with an image, we not only get that filesystem 
+snapshot,but we also get this default command that is supposed to be executed after the container 
+is created
+(image3) 
+So the variation on DOCKER run that we're going to look at is going to give you a way to override 
+this.
+Here's how we do it will execute Docker, run the image name just like we did before, and then after
+that we'll supply a alternate command to be executed inside the container after it starts up.
+We're going to use a different image than what we use before.
+We're going to use an image called Busy Box.
+
+
+	docker run busybox echo Hi there
+This is an override.
+
+
+I want you to run, Docker run busy box.
+
+And then the override command that we're going to use this time is going to be ls,
+It's going to print out all the files and folders inside of a given directory.
+
+	docker run busybox ls
+
+And if you are on, say, a Windows machine right here, these folders might look very strange to you
+and very unfamiliar.
+So, in fact, these are folders that are being printed out that are not belonging to you on your computer.
+These are folders that exist solely inside that container.
+(image4)
+I want to remind you about exactly what happens when we create a container out of an image.
+So over here, we've got the busy box image.
+It has some default file system snapshot and some presumably default command.
+
+That busy box image has default folders of bin Dev, etc, home, proc and so on, all the ones
+
+docker run hello-world ls
+
+And we get a very similar error message here as well.
+So what's going on?
+image4
+When we run the alternate commands or those alternate echo in commands with busy box, those commands
+work because ls and Echo are two programs that exist inside of the busy box file system image.
+
+However, with our Hello World Program over here, the only thing that exists inside this file system
+snapshot is a single program like one single file. And all that thing does is echo out or kind of print out that singular message that we saw when we ran that container
+
+-----------
+image8
+	docker ps
+This command will list all the different running containers that are currently on your machine.
+
+At present, we have no containers running our machine, so we have no entries inside this table.
+At this point, we've only been running images or creating containers that run very quickly and then
+immediately closed down.
+
+So, for example, when we were running 
+Docker run  busybox echo high there, 
+that container starts up and then almost immediately exits us back to the command line.
+ 	docker run busybox echo how are you
+ 	
+So if we want peace to be meaningful at all, we have to have some container that is running for some
+longer amount of time in order to get a container running a little bit longer.
+
+docker run busybox ping google.com
+
+This command is going to continue running so we can now run Docker in a second window and we should
+see this container up here in the listing.
+
+We can modify the command just a little bit to show all containers that have ever been created on our
+machine.
+
+	docker ps --all
+	
+So in practice, we're going to end up using the DR Command quite a bit to see what containers are currently
+running on our machine, one of the most common uses of cockups is not only to see what's running,
+but also to get the idea of a running container, because, like I said, we very frequently want to
+issue commands on a very specific container and for that we need its ID.
+---------------
+CONTAINER LIFECYCLE
+I want to kind of go all the way to the start and really figure out what happens when a container is
+first created.
+(image 10)
+I said, creating and running a container, creating a container and actually starting it up are actually
+two separate processes.
+
+image-10 start
+So there's actually two additional commands in addition to Docker run that we can use to start up a
+new container. docker run is identical to running two other commands together. First, Docker create and then Docker start.
+
+image-10 create
+The process of creating a container is where we kind of take the file system in here and kind of prep
+it for use in this new container, when we create the container, we're just talking about kind of prepping
+or setting up this file system snapshot to be used to create the container to actually start the container.
+image-9
+That's when we actually execute this start up command that might start up the process of like hello
+world or in the case of that busy box, one that we used the echo.
+Hi there.
+So, again, creating a container is about the file system starting.
+It is about actually executing the start up command.
+
+start to investigate the differences between creating container and starting a container.
+
+docker create hello-world
+
+when I run that command, I get this long string of characters printed out.
+This is the idea of the container that was just created.
+I can now actually execute the Hello World Command inside of this container by running 
+Docker starts -a ID
+
+Now, what was with the dash right there?
+Well, to show you what's going on with that, let's try running Docker's start again, but without
+the -a
+start, you'll notice that I just see the ID, the -a command is what's going to make Docker actually
+watch for output from the container and print it out to your terminal.
+
+So the -a specifically means, hey, kind of attached to the container, so to speak, and watch for
+output coming from it and print it out at my terminal.
+
+So you'll notice that's a very small difference between Docker Run and Docker start by default.
+Docker Run is going to show you all the logs or all the information coming out of the container by default.
+Docker Start is the opposite.
+Docker Start is not going to show you information coming out of the terminal.
+
+RESTART STOPPED CONTAINER
+
+LEt me do 
+	Docker ps -all
+When a container is exited, we can still start it back up.
+So just because a container stop doesn't mean that it's like dead or cannot be used again.
+We can very easily stop and then start containers again at some point in the future to start a container
+back up.
+We can take its ID and then execute 
+	docker start -a and paste that id.
+
+ which is kind of interesting.
+ 
+ image11
+ Let's take a look at a diagram to really understand this entire series of commands that we just issued.
+ 
+  we then ran the Docker Start command a second time.
+
+What happened was the running process or this primary command was issued a second time inside the container.
+When you have a container that's already been created, we cannot replace that default command.
+	docker start -a 30e67d436a83 echo bye bye
+	
+REMOVING STOPPED CONTAINER
+docker ps -ll
+ it might be to my advantage to try to entirely delete them and not just leave them in this stop
+state to delete all these containers.
+I can run 
+docker system prune
+ all then be presented with a warning here, so just to be clear, this is not only going to delete
+stopped containers, it's also going to delete a couple of either items as well.
+	docker system prune
+stopped containers, it's also going to delete a couple of either items as well.
+Most notably, your bill to cash the bill to cash is any image that you have fetch from Docker Hub.
+So after running Docker Prune, you'll have to read download images from Docker, which is not a really
+big deal.
+I really recommend you keep the Docker system, prune command in mind, because any time that you're
+kind of done working with Docker for a period of weeks or months, or if you decide you just don't want
+to work with Docker again at all, you will want to run this command to delete any containers that are
+still just kind of sitting around eating up displays.
+
+RETIREVE LOG OUTPUT
+
+	docker create busybox echo hi there
+	docker start 73f80d3a6c
+	
+So what would happen if you wanted to get all the output from the container without having to add in
+that -a flag, for example?
+image12
+
+	docker logs efd434efb9b53f1992f7fcd8cdf87f0e32e6879c081876178a10335edda9a995
+	
+One thing to be really clear about is that by running Docker logs, I'm not rerunning or restarting
+the container to in any way, shape or form.
+I'm just getting a record of all the logs that have been emitted from that container that Docker logs
+command is something that we're going to be using quite a bit as we are trying to debug or set up new
+containers, because as you can see, it's a really good way to kind of inspect a container and see
+what's going on inside of it.
+
+STOPPING CONTAINER
+	docker create busybox ping google.com
+	docker start ID
+	dokcer log ID
+	docker ps
+	
+How do we actually stop this container?
+Remember, the PIN command is going to essentially go on forever and we have to actually send it a signal
+and tell it, hey, Pinkman, please stop like you're all done.
+No need to reach out to Google anymore.
+image 13
+ we can issue either the
+Docker Stop command or the docker kill command.
+
+Both these are going to stop the running container, but they look like they kind of do the same thing
+here.
+So what's the difference between them?
+
+Well, here's what happens behind the scenes.
+image 14
+When you issue a docker stop commands, a hardware signal is sent to the process, the primary process
+inside that container.
+In the case of Docker Stop, we send a sig term message, which is short for terminate signal.
+
+Sig term is used any time that you want to stop a process inside of your container and shut the container
+down and you want to give that process inside there a little bit of time to shut itself down and do
+a little bit of cleanup. A lot of different programming languages have the ability for you to listen for these signals inside
+of your code base.
+And as soon as you get that signal, you could attempt to do a little bit of cleanup or maybe save some
+file or emit some message or something like that.
+image 14
+On the other hand, the Docker Kill command issues, a sig kill or a kill signal to the primary running
+process inside the container securely essentially means you have to shut down right now and you do not
+get to do any additional work.
+
+So ideally, we always stop a container with the docker, stop command in order to give the running
+process inside of it a little bit of time to shut itself down.
+
+Now, one kind of little oddity or interesting thing about Docker stop when you issued Docker stop to
+a container.
+If the container does not automatically stop in 10 seconds, then Docker is going to automatically fall
+back to issuing the docker kill command.
+
+docker stop 40fc2af9e5af (docker create busybox ping google.com)
+
+The ping command doesn't really have the ability to say, oh, yeah, I understand you want me to shut
+down the ping command is rather I don't know what's term for it.
+The command wants to do its own thing and it just wants to run forever.
+And so after we waited those ten seconds, eventually the kill signal was sent to it, telling it,
+Hey, Ping, you're done, get out of here, shut yourself down.
+And so that's why we had to wait a couple of seconds.
+Let's now take that container idea again.
+
+MULTICOMMAND CONTAINER
+
+Much earlier in this course, like in the first one or two sections, you saw me start up a new copy
+of redis on my computer by using Docker as a reminder, Redis is an in-memory data store that is very
+commonly used with Web applications.
+
+I took the liberty of installing Redis on my local machine directly without Docker being involved whatsoever,
+because I want to show you the normal way in which we might interact with retests.
+I'm going to first start up an instance of the server by running a server.
+Now again, I am able to run this command because I installed redis
+ on my local machine without Docker
+involved.
+src/redis-server
+src/redis-cli
+set mynumber 5
+get mynumber 
+
+So now you're probably wondering, where am I going with this?
+Well, let's try starting up retests using Docker, and then you're going to very quickly see some interesting
+behavior around Reetta Seelie.
+So let's give it a shot.
+I'm going to stop my running stuff.
+And then I'm going to start up an instance of retests on my machine using Dakkar run retests.
+
+So I now want to start up a copy of the redis CLI and try to work with the information that is being
+handled inside of the server.
+		docker run redis
+		docker redis-cli
+
+Well, let's look at a diagram.
+
+image 18 attach
+
+So just a second ago, we started up a new container that is running redis server now redis is running
+only inside this container.
+So if I tried to run redis CLI outside the container, outside the container, I have no access
+to anything that's going on inside there.
+
+And so there is no ready CLI command to run outside the container.
+If we want to start up the CLI, we need to somehow get into this container and execute a second
+command inside of it like this.
+
+EXECUTING COMMAND in RUNNING CONTAINERS
+
+To do so, we're going to be making use of another Docker command.
+So the Docker command we're going to use is Docker EXEC, exactly short for execute and we use it to
+execute an additional command inside of a container.
+
+We're going to write Docker EXEC (image 16)
+
+  docker exec -it 98616a39a33b redis-cli
+  set mynumber 5
+  get mynumber 
+  
+ So by using the EXEC command, we were able to start up a second running program inside of our container
+and the dash it flag right here allowed us to enter in text on our keyboard and have it be sent into
+that running container.
+
+Let's try removing the flag there and seeing what happens.
+	  docker exec 98616a39a33b redis-cli
+
+I'm going to exit this by hitting control, see on my keyboard and then I'll do Docker again.
+But this time I'm going to leave off the flags, so I'll do the ID and then redis CLI.
+
+And you'll notice that this time around I just got kicked directly back to my terminal.
+I got kicked directly back because Rita Seelie was started up, but we did not get the ability to enter
+in any text.
+So when Redis CLI was started up, but it very quickly realized, hey, I don't have any possibility
+of getting any text input, it decided to just entirely close down and kick us back to our terminal.
+Now, this idea behind kind of adding on this IT flag and adding in text here is actually something
+that's rather important in the world of Docker.
+
+THE PURPOSE OF THE IT FLAG
+
+give you a better idea of what this dash it flag right here is really doing for us.
+
+The first thing you need to understand is a little bit more about how processes run inside of a Linux
+environment.
+As a quick reminder, when you are running docker on your machine, every single container that you
+are running is running inside of a virtual machine running Linux.
+So these processes are really being executed inside of a Linux world, even if you're on Mac or Windows.
+
+(image 20)
+In this diagram, we've got three different running processes all inside in theory of a running container
+or really inside of a Linux environment, every process that we create in a Linux environment has three
+communication channels attached to it, that we refer to as standard in, standard out and standard error.
+These channels are used to communicate information either into the process or out of the process. standard
+in, as you might guess, is used to communicate information into the process.
+
+So when you're at your terminal and you type stuff in the stuff, you type is being directed into a
+running standard and channel attached to, say, the of CLI, the standard out channel that is attached
+to any given process is going to convey information that is coming from the process.
+So standard out might be redirected over to your running terminal and that's going to end up as being
+stuff that is going to show up on the screen.
+
+Standard ERROR is very similar, but it conveys information out of the process that is kind of like an air
+in nature.
+So if Rosily has some air inside of it, that's going to be communicated to the outside world over the
+standard air channel and very similar to standard out that's going to be redirected to show up on the
+screen of your terminal.
+
+In reality, it's a dash -i and a dash -t like so.
+docker exec -i -t 
+
+-i on here means when we execute this new command inside the container,
+we want to attach our terminal to the standard in channel of that new running process.
+So by adding on the -i flag, we are saying make sure that any stuff that I type gets directed to
+standard in of redisCLI.
+
+The -t flag.
+
+Is what kind of makes all this text show up a little bit pretty
+
+Now, in reality, it's doing a little bit more than that.
+
+	docker exec -i 98616a39a33b redis-cli
+	set value 5
+	get value
+	
+A very common thing that you're going to want to do when you are using Docker is to get shell access
+or terminal access to your running container.
+In other words, you are going to want to run commands inside of your container without having to rerun
+Docker, exact docker, exact docker again and again all day.
+
+So in this section, I'm going to show you how you can open up a Shell terminal in the context of your
+running container.
+	docker exec -it 98616a39a33b sh
+	ls
+	# cd /
+	# ls
+	bin  boot  data  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+	# echo hi there
+	hi there
+	# export b=5
+	# echo $b
+CTRL +D exit
+
+So what is sh?
+image 21
+Well, sh is the name of a program and it's a program that has been executed inside of that container.
+SH is a command processor or a shell.
+It's something that allows us to type commands in and have them be executed inside that container.
+
+if we wanted to, we could also run Docker Run the original Docker Run command right here along
+with that flag and start up a shell immediately when a container first starts up.
+docker run -it busybox sh
+
+CONTAINER ISOLATION
+
+open a shell docker run -it busybox sh
+create a file 
+	touch hithere
+	
+open a second shell run docker run -it buybox sh
+show the file 
+ls

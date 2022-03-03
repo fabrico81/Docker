@@ -1,0 +1,95 @@
+image 1
+ we're going to kick off a new project
+image 2 - 3
+write the Dockerfile
+The goal of this project is to create a tiny no just Web application, wrap it inside of a docker container,
+
+and then be able to access that Web application from a browser running on your local machine.
+
+image 5
+
+So just in case you've never made use of Node before, two commands that you need to be aware of to
+install dependencies and start up this application.
+So when you are using the Alpine image and you expect to run some fancy Web application depending upon
+Node or depending upon Ruby or Java, chances are you're going to have to do some additional fixes or
+some additional setup to get this thing working now to solve this issue, to solve the issue of NPM
+not being available inside of our base image.
+
+Alpine as a very small image.
+
+It's only about five megabytes large, and so it has a rather limited set of default programs and included
+inside of it.
+In fact, I kind of like this diagram right here.
+	Docker build .
+So two approaches.
+We can either essentially use someone else's work or we can try to build up our own image from scratch.
+
+We're going to find an image that has already been configured to have NPM preinstalled inside of it.
+Alpine
+So the default node installation might include extra programs like, say, GIT or a package manager.
+
+	alpine:node
+	docker build .
+	
+But it looks like the container is complaining that, hey, I don't have this file available, like
+where's the package?
+That JSON file.
+I need this to know which dependencies I need to install.
+However, NPM itself very quickly throw a error message right here, complaining that there is no file
+called packaged JSON available now,
+
+docker build -t fcorrente/simpleweb .
+docker run fcorrente/simpleweb
+
+Well, we definitely got our image built and we are running a container out of it, but we still are
+not able to actually visit this port or see the Web application running.
+
+Our browser is making a request to localhost 8080, which is essentially a reference to your current
+machine on Port 8080 by default, no traffic that is coming into your computer or into your localhost
+network is routed into the container.
+image11
+But by default, no incoming traffic to your computer is going to be directed into the container in
+order to make sure that any request from either your computer or some outside computer will be redirected
+into the container.We have to set up a explicit port mapping.
+image12
+So here's what we're going to do to set up Docker run with port mapping, we're going to add on a dash
+P flag.
+The syntax overall is docker run, then dash P, then we're going to specify that any incoming traffic
+on our local network to this port right here should be automatically forwarded on to this port inside
+the container right here.
+
+Now, very quickly, one last little thing that I want to show you, because this will be done very
+frequently on real projects, the port from the source machine or the source network that we are mapping
+from to the port that we are mapping to inside the container do not have to be identical.
+
+docker run -it fcorrente/simpleweb sh
+
+docker exec -it idcontainer
+
+REBUILD
+If we want to update the file inside the container, we're going to have to do some additional fancy
+configuration.
+We would have to rerun the docker, build command and attempt to build it again, which is going to
+copy over the newly changed files, then run and install and then start our server up.
+Let's go through that process right now because there's one more little thing that I want to show you
+	change the index.js - build the imange 
+During step three, we're copping over all of our project files and folders.
+
+MINIMIZE THE BUILD
+
+We're going to take our current build process inside of the Docker file and we're going to split the
+copy operation out into two different steps.
+
+	COPY ./package.json ./
+	RUN npm install
+	COPY ./ ./
+
+the really only effect is going to have is if we make a change to the package
+JSON file, that's really the only situation in which NPM install will normally be executed again during
+
+change the message in index.js rebuild the image  docker build -t fcorrente/simpleweb .
+
+so this id to say wherever possible, it is kind of nice to segment out the copy operations to make 
+ sure that you're only copying the bare minimum for each successive step.
+
+the build process.

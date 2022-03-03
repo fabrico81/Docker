@@ -1,0 +1,100 @@
+Throughout this course, we've been making use of images that have been created by other engineers.
+So, for example, we have used, say, the Hello World Image or Redus or busy box.
+
+We're going to create something called a docker file, a darker file as essentially a plain text file
+that is going to have a couple of lines of configuration placed inside of it.
+image 2
+This configuration is going to define how our container behaves or more specifically, what different
+programs it's going to contain and what it does when it starts up as a container.
+
+image 3 
+File structure
+
+dockerfile redis
+show file
+run it docker build .
+
+docke run id_created
+
+DOCKER TEARDOWN
+
+image 10, 11
+
+What is an image
+image 7
+So these steps right here, very similar to what we just did inside that Docker file when we specified
+that base image of Alpine, that was a lot like installing an initial operating system by default.
+When we create a container or something, when we create an image, we have an empty image.
+
+We had said run apk ad update redis.
+This is not a Docker command right here.
+This line has nothing to do with Docker whatsoever.
+APK is a program called Apache Package, something I think it is a package manager that comes preinstalled
+on the Alpine image and we can use that package Menger that is built into Alpine to automatically download.
+
+THE BUILD PROCESS
+The build command is what we use to take a Docker file and generate an image out of it.
+The DOT right here is specifying what is called the build context.
+That build context is essentially the set of files and folders that belong to our project.
+
+image11
+
+The next line was the run apk ad update retests.
+So here's exactly what happened behind the scenes.
+When Docker's server saw this line of configuration right here, it looked back at the last step that
+just occurred.
+So it looked back at this step, the from Alpine step.
+It looked at the image that came out of that previous step.
+
+image 04
+So we can kind of imagine that we took the entire file system snapshot from the Alpine image and we
+stuffed it into this very temporary container that was created just for the second step right here or
+the second instruction after creating this temporary container, this command right here, the command
+that we just added on.
+Was executed inside that container as its primary running process, so we took that run command, which
+took that line or that full command right there, and we executed it as a process inside of the container.
+So this is this containers primary running process.
+
+ with CMD
+
+We're going to look at the image that was generated during the previous step.
+So in this case, the image that was taken from the previous step is this three image.
+
+image12 -process
+
+REBUILD-CACHE
+
+apk add --update gcc
+image13
+
+So even though we're still taking the Alpine image and adding to it and adding Redis to it, the series
+of steps have changed.
+And so Docker is going to say, OK, well, this time we're taking Alpine and first adding in jokin.
+
+Tagging an image
+image14
+We are going to run Docker Built and then we're going to add on this little argument right here that is
+going to tag the image that is created and make it a lot easier to refer to it by a name that you and
+I can customize, the convention for this.
+image15
+
+you might be wondering why some other images that we've been able to use have more simplified names
+like Simply redis or Hello World or busy box?
+Well, all those are community images.
+They're images that have been created by people in the community and kind of open source for very popular
+use.
+Any time that you are creating an image of your own, you're always going to prefix it with your doctor
+ID.
+docker build -t fabriziocorrrente/redis .
+
+And then you do not have to actually specify the version on the end.
+
+DOCKER COMMIT
+
+docker run -it alpine sh
+docker ps
+docker commit -c 'CMD ["redis-server"]' ID
+
+Whenever you're making use of IEDs or hashes in the darker world, you don't have to copy the entire
+thing. You can just copy a segment of the start.
+

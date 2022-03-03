@@ -1,0 +1,87 @@
+App Overview
+image 1
+
+Let's imagine that you start getting a lot of traffic to this little somewhat useless website that you've
+put together as you start to get more and more traffic, you're probably going to want to introduce
+more Web application servers to respond to incoming HTTP requests.
+And so in order to make additional servers, you might create additional instances of your docker container
+that contains both the notification and an instance of red.
+The issue with this approach is that every one of these different registers would be completely disconnected
+from each other.
+
+Instead, we would want to have one single instance.
+And then if we need to scale up the Web application itself, we could just scale the node server and
+make additional instances of the node server.
+So essentially what we're going to do is create something that looks a little bit more like this.
+We are going to have separate docker containers for both the node application and the server.
+
+write docker file from visits
+
+docker build -t fcorrente/visits .
+docker run fcorrente/visits
+
+ you'll notice we immediately get an error message.
+
+It says Redish connection to something, something something failed.
+
+So our applications attempting to start up, but there's no ready server running for it to connect to.
+
+So in this section, we're going to focus on getting a separate container, running a Redis server.
+
+docker run redis
+
+in a second shell we can run our node image
+docker run fcorrente/visits
+
+And you'll notice, well, it looks like we still have the same error message we had before, even though
+we are now running a red server inside of a separate container.
+
+image separete container
+Now, these two containers do not have any automatic communication between the two whatsoever.
+So in order to make sure that our note app has the ability to kind of reach out to the server and store
+information or work with it in some fashion, we need to set up some networking infrastructure between
+the two.
+
+So here's our two options we can either make use of the darker Seelie that we've been making use of
+throughout this course so far.
+
+use the docker CLI Network features
+use docker compose
+
+Docker CLI has functionality tied to it that will allow us to set up a network between two separate containers.
+However, there's a little issue with it and the issue is basically just that it's a real pain in the
+neck to do.
+When you make use of docker cli to set up some networking, it's going to involve a handful of different
+commands that to reran every single time you start up your different containers.
+
+What you're going to see and what you and I are going
+ to do is we're going to make
+use of a separate CLI tool called Docker Compose
+image docker-compose
+ 	docker-compose //show the command
+ 	
+ 	
+ 	build docker file
+ 	
+ We want this container to be built using the Docker file inside the current directory.
+So rather than just specifying an image like we did right there, I'm going to say build Kolan Dot.
+Now, to specify the ports, we're going to put a dash between ports like so and then intenta we're
+
+going to put a dash like so.
+
+Now, the reason we're putting a dash right here is the dash in a yellow file is how we specify an array
+so we can technically map many different ports inside of a single file for a single service or a single
+container.
+Remember the entire reason that we started talking about Dr. Campos in the first place.
+We had said, oh, yeah, we want to use Dr. Campos because it makes networking or connecting these
+containers together very straightforward.
+
+But you'll notice that we have put absolutely no configuration into this file right here to kind of
+specify any layer of networking.
+So believe it or not, by just defining these two services inside this file, Dr. Campos is going to
+atomatically create both these containers on essentially the same network and they're going to have
+
+docker-compose up --build
+
+
+
